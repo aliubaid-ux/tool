@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+       <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        #insuranceForm {
+            width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        #insuranceForm h2 {
+            text-align: center;
+            color: #4a4e69;
+            font-size: 24px;
+        }
+
+        label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+
+        select, input[type=text], input[type=range], input[type=submit] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type=submit] {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        #results {
+            width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .plan {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .plan-header {
+            font-weight: bold;
+            color: #4a4e69;
+        }
+
+        .star-rating {
+            color: #ffc107;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="insuranceForm">
+    <h2>Phone Insurance Comparison Tool</h2>
+    
+    <!-- Phone Company Selection -->
+    <label for="phoneCompany">Phone Company:</label>
+    <select id="phoneCompany" name="phoneCompany">
+        <option value="Apple">Apple</option>
+        <option value="Samsung">Samsung</option>
+        <option value="Google">Google</option>
+        <option value="OnePlus">OnePlus</option>
+        <option value="Huawei">Huawei</option>
+        <option value="Xiaomi">Xiaomi</option>
+        <option value="LG">LG</option>
+        <option value="Sony">Sony</option>
+        <option value="Motorola">Motorola</option>
+        <option value="Nokia">Nokia</option>
+        <option value="HTC">HTC</option>
+        <option value="Lenovo">Lenovo</option>
+        <option value="Asus">Asus</option>
+        <option value="Oppo">Oppo</option>
+        <option value="Vivo">Vivo</option>
+        <option value="ZTE">ZTE</option>
+        <option value="Realme">Realme</option>
+        <!-- More companies can be added as required -->
+    </select>
+
+    <!-- Phone Model (Optional) -->
+    <label for="phoneModel">Phone Model (Optional):</label>
+    <input type="text" id="phoneModel" name="phoneModel">
+
+    <!-- Budget Selection -->
+    <label for="budget">Your Budget: <span id="budgetValue">50</span></label>
+    <input type="range" id="budget" name="budget" min="0" max="100" value="50" oninput="document.getElementById('budgetValue').textContent=this.value">
+
+    <!-- Type of Insurance -->
+    <label for="insuranceType">Type of Insurance:</label>
+    <select id="insuranceType" name="insuranceType">
+        <option value="Accidental Damage">Accidental Damage</option>
+        <option value="Theft Protection">Theft Protection</option>
+        <option value="Extended Warranty">Extended Warranty</option>
+        <option value="Screen Protection">Screen Protection</option>
+        <option value="Water Damage">Water Damage</option>
+        <option value="Full Coverage">Full Coverage</option>
+    </select>
+
+    <!-- Submission Button -->
+    <input type="submit" value="Compare Insurance">
+</form>
+
+<!-- Results Section -->
+<div id="results"></div>
+
+<script>
+document.getElementById('insuranceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Retrieve user inputs
+    var phoneCompany = document.getElementById('phoneCompany').value;
+    var phoneModel = document.getElementById('phoneModel').value;
+    var budget = parseInt(document.getElementById('budget').value);
+    var insuranceType = document.getElementById('insuranceType').value;
+
+    // Display results
+    var resultsHTML = "<h3>Suggested Insurance Plans</h3>";
+    resultsHTML += generateInsurancePlanSuggestions(phoneCompany, phoneModel, budget, insuranceType);
+    document.getElementById('results').innerHTML = resultsHTML;
+});
+
+function generateInsurancePlanSuggestions(phoneCompany, phoneModel, budget, insuranceType) {
+    // Example insurance plans with ratings for demonstration
+    var plans = [
+        { name: "Global Insurance - Basic Plan", description: "Basic coverage for your " + phoneCompany + " phone.", price: 30, rating: 4.5, link: "#link1" },
+        { name: "SafeMobile - Comprehensive Plan", description: "Full coverage including theft and water damage.", price: 70, rating: 4.9, link: "#link2" },
+        { name: "PhoneGuard - Economy Plan", description: "Economical plan for essential coverage.", price: 25, rating: 4.2, link: "#link3" },
+        { name: "MobileSecure - Premium Plan", description: "Premium coverage with extra benefits.", price: 85, rating: 4.8, link: "#link4" }
+    ];
+
+    var suggestions = '';
+    var planFound = false;
+
+    for(var i = 0; i < plans.length; i++) {
+        if (plans[i].price <= budget) {
+            planFound = true;
+            var stars = getStarRating(plans[i].rating);
+            suggestions += "<div class='plan'><div class='plan-header'>" + plans[i].name + "</div><div>" + stars + "</div><p>" + plans[i].description + "</p><p><b>Price:</b> $" + plans[i].price + "</p><a href='" + plans[i].link + "' target='_blank'><button>More Info</button></a></div>";
+        }
+    }
+
+    return planFound ? suggestions : '';
+}
+
+function getStarRating(rating) {
+    var fullStar = Math.floor(rating);
+    var halfStar = (rating % 1) >= 0.5 ? 1 : 0;
+    var emptyStar = 5 - fullStar - halfStar;
+
+    var starsHtml = '';
+    for (var i = 0; i < fullStar; i++) {
+        starsHtml += '&#9733;'; // Full star
+    }
+    if (halfStar) {
+        starsHtml += '&#189;'; // Half star
+    }
+    for (var i = 0; i < emptyStar; i++) {
+        starsHtml += '&#9734;'; // Empty star
+    }
+    return starsHtml;
+}
+</script>
+
+
+
+</body>
+</html>
+
